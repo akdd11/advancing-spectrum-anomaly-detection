@@ -5,6 +5,16 @@ Code for the paper "Advancing Spectrum Anomaly Detection through Digital Twins"
 
 ...
 
+### Module Versions
+
+The code was developoed Python modules 3.10.10 and the following module versions have been used:
+* Numpy: 1.23.5
+* TensorFlow: 2.13.0
+* Mitsuba: 3.2.1
+* Sionna: 0.15.1
+* Drjit: 0.4.1
+* Hydra: 1.3.2
+
 
 ## Scenario Creation
 
@@ -28,3 +38,7 @@ Generating the dataset to process consists of three steps. In a first step, a hu
 ### Pathloss Map Generation
 
 They are generated using the script `src\dataset_generation\pathloss_map_generation.py'`. The configuration is contained in the file `src\dataset_generation\conf\pathloss_map_generation.yaml`. Here, for example the scene number and the number of generated pathloss maps as well as the ray tracing parameters can be configured.
+
+### Radio Map Generation
+
+In this step, the pathloss maps are combined to obtain the PT (original) which might also contain the jammer. To execute the radio map generation, run the script `src\dataset_generation\radio_map_generation.py`. The configuration is contained in the file `src\dataset_generation\conf\radio_map_generation.yaml`. Here, for example the scene number and the number of generated radio maps as well as the number and transmit powers of the transmitters and jammers can be configured.

@@ -1,0 +1,14 @@
+dataset_nr: 0
+
+num_radiomaps: 50       # number of radiomaps to generate
+
+tx_power: 20    # transmitter power in dBm
+min_num_tx: 3   # minimum number of regular transmitters
+max_num_tx: 3   # maximum number of regular transmitters
+
+min_num_jam: 0  # minimum number of jammers
+max_num_jam: 1  # maximum number of jammers
+
+sionna:
+  scene_nr: 0
+  noise_floor: -100.00
