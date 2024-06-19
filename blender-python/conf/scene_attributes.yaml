@@ -1,0 +1,53 @@
+# This file is read by the create_scenario_with_obstacles.py script.
+
+room: 
+  size: [40,40,5]     
+
+obstacles: 
+  o1:
+    anchor_point: [7, 22, 0]
+    edge_length: [4, 14, 3]
+    type: metal
+    
+  o2:
+    anchor_point: [18, 22, 0]
+    edge_length: [4, 14, 3]
+    type: metal
+
+  o3:
+    anchor_point: [29, 22, 0]
+    edge_length: [4, 14, 3]
+    type: metal
+
+  o4:
+    anchor_point: [7, 4, 0]
+    edge_length: [4, 14, 3]
+    type: metal
+
+  o5:
+    anchor_point: [18, 4, 0]
+    edge_length: [4, 14, 3]
+    type: metal
+
+  o6:
+    anchor_point: [29, 4, 0]
+    edge_length: [4, 14, 3]
+    type: metal
+
+transmitters:
+  t1:
+    anchor_point: [32, 3.7, 1.5]
+  
+  t2:
+    anchor_point: [4, 29, 1.5]
+  
+  t3:
+    anchor_point: [27, 30, 1.5]
+
+jammers:
+  j1:
+    anchor_point: [26, 39, 1.5]
+
+base_stations:
+  bs1:
+    anchor_point: [0.25, 39.75, 3]
