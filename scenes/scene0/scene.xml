@@ -35,47 +35,11 @@
 
 <!-- Materials -->
 
-	<bsdf type="twosided" id="mat-itu_concrete">
-		<bsdf type="principled">
-			<texture type="bitmap" name="base_color">
-				<string name="filename" value="textures/ConcretePoured001_COL_2K_METALNESS.png"/>
-			</texture>
-			<float name="spec_tint" value="0.000000"/>
-			<float name="spec_trans" value="0.000000"/>
-			<texture type="bitmap" name="metallic">
-				<string name="filename" value="textures/ConcretePoured001_METALNESS_2K_METALNESS.png"/>
-			</texture>
-			<float name="anisotropic" value="0.000000"/>
-			<texture type="bitmap" name="roughness">
-				<string name="filename" value="textures/ConcretePoured001_ROUGHNESS_2K_METALNESS.png"/>
-			</texture>
-			<float name="sheen" value="0.000000"/>
-			<float name="sheen_tint" value="0.500000"/>
-			<float name="clearcoat" value="0.000000"/>
-			<float name="clearcoat_gloss" value="0.173205"/>
-			<float name="specular" value="0.500000"/>
-		</bsdf>
+	<bsdf type="diffuse" id="mat-itu_concrete">
+		<rgb value="0.800000 0.800000 0.800000" name="reflectance"/>
 	</bsdf>
-	<bsdf type="twosided" id="mat-itu_metal">
-		<bsdf type="principled">
-			<texture type="bitmap" name="base_color">
-				<string name="filename" value="textures/MetalGalvanizedSteelWorn001_COL_2K_METALNESS.jpg"/>
-			</texture>
-			<float name="spec_tint" value="0.000000"/>
-			<float name="spec_trans" value="0.000000"/>
-			<texture type="bitmap" name="metallic">
-				<string name="filename" value="textures/MetalGalvanizedSteelWorn001_METALNESS_2K_METALNESS.jpg"/>
-			</texture>
-			<float name="anisotropic" value="0.000000"/>
-			<texture type="bitmap" name="roughness">
-				<string name="filename" value="textures/MetalGalvanizedSteelWorn001_ROUGHNESS_2K_METALNESS.jpg"/>
-			</texture>
-			<float name="sheen" value="0.000000"/>
-			<float name="sheen_tint" value="0.500000"/>
-			<float name="clearcoat" value="0.000000"/>
-			<float name="clearcoat_gloss" value="0.173205"/>
-			<float name="specular" value="0.500000"/>
-		</bsdf>
+	<bsdf type="diffuse" id="mat-itu_metal">
+		<rgb value="0.800000 0.800000 0.800000" name="reflectance"/>
 	</bsdf>
 
 <!-- Emitters -->

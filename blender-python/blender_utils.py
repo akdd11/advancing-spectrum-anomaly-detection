@@ -135,12 +135,16 @@ def create_description_file(output_path, room_size, **kwargs):
     description_file.close()
 
 
-def init_materials(texture_path):
+def init_materials(texture_path, initialize_textures=False):
     """The materials are initialized and assigned with textures for
     making nice visualizations.
     
     texture_path : str
         The path to the texture folder.
+    initialize_textures : bool
+        Whether to initialize the textures. The textures are not part of the
+        repository and need to be downloaded manually. Please refer to the README for
+        more information.
     """
 
     materials = {}
@@ -149,81 +153,83 @@ def init_materials(texture_path):
 
     # Concrete ------------------------------------------------------------------------------------
 
-    # Adjust textures of the materials
-    materials['concrete'].use_nodes = True
-    nodes_concrete = materials['concrete'].node_tree.nodes
+    if initialize_textures:
 
-    # Clear existing nodes
-    for node in nodes_concrete:
-        nodes_concrete.remove(node)
+        # Adjust textures of the materials
+        materials['concrete'].use_nodes = True
+        nodes_concrete = materials['concrete'].node_tree.nodes
 
-    # Add Principled BSDF shader
-    bsdf_shader_concrete = nodes_concrete.new(type='ShaderNodeBsdfPrincipled')
+        # Clear existing nodes
+        for node in nodes_concrete:
+            nodes_concrete.remove(node)
 
-    # Add Image Texture node
-    texture_nodes_concrete = {k: nodes_concrete.new(type='ShaderNodeTexImage') for k in ['color', 'metalness', 'roughness']}
+        # Add Principled BSDF shader
+        bsdf_shader_concrete = nodes_concrete.new(type='ShaderNodeBsdfPrincipled')
 
-    # Set the image path
-    texture_path_concrete = os.path.join(texture_path, 'ConcretePoured')
-    texture_nodes_concrete['color'].image = bpy.data.images.load(os.path.join(texture_path_concrete,
-                                                                              'ConcretePoured001_COL_2K_METALNESS.png'))
-    texture_nodes_concrete['metalness'].image = bpy.data.images.load(os.path.join(texture_path_concrete,
-                                                                                  'ConcretePoured001_METALNESS_2K_METALNESS.png'))
-    texture_nodes_concrete['roughness'].image = bpy.data.images.load(os.path.join(texture_path_concrete,
-                                                                                  'ConcretePoured001_ROUGHNESS_2K_METALNESS.png'))
+        # Add Image Texture node
+        texture_nodes_concrete = {k: nodes_concrete.new(type='ShaderNodeTexImage') for k in ['color', 'metalness', 'roughness']}
 
-    # Link nodes: texture color to Principled BSDF base color
-    materials['concrete'].node_tree.links.new(texture_nodes_concrete['color'].outputs['Color'],
-                                              bsdf_shader_concrete.inputs['Base Color'])
-    materials['concrete'].node_tree.links.new(texture_nodes_concrete['metalness'].outputs['Color'],
-                                              bsdf_shader_concrete.inputs['Metallic'])
-    materials['concrete'].node_tree.links.new(texture_nodes_concrete['roughness'].outputs['Color'], 
-                                              bsdf_shader_concrete.inputs['Roughness'])
-    
-    # Add Material Output node
-    material_output_concrete = materials['concrete'].node_tree.nodes.new(type='ShaderNodeOutputMaterial')
+        # Set the image path
+        texture_path_concrete = os.path.join(texture_path, 'ConcretePoured')
+        texture_nodes_concrete['color'].image = bpy.data.images.load(os.path.join(texture_path_concrete,
+                                                                                'ConcretePoured001_COL_2K_METALNESS.png'))
+        texture_nodes_concrete['metalness'].image = bpy.data.images.load(os.path.join(texture_path_concrete,
+                                                                                    'ConcretePoured001_METALNESS_2K_METALNESS.png'))
+        texture_nodes_concrete['roughness'].image = bpy.data.images.load(os.path.join(texture_path_concrete,
+                                                                                    'ConcretePoured001_ROUGHNESS_2K_METALNESS.png'))
 
-    # Link BSDF output to Surface input
-    materials['concrete'].node_tree.links.new(bsdf_shader_concrete.outputs['BSDF'], material_output_concrete.inputs['Surface'])
-    
-    # Metal ---------------------------------------------------------------------------------------
+        # Link nodes: texture color to Principled BSDF base color
+        materials['concrete'].node_tree.links.new(texture_nodes_concrete['color'].outputs['Color'],
+                                                bsdf_shader_concrete.inputs['Base Color'])
+        materials['concrete'].node_tree.links.new(texture_nodes_concrete['metalness'].outputs['Color'],
+                                                bsdf_shader_concrete.inputs['Metallic'])
+        materials['concrete'].node_tree.links.new(texture_nodes_concrete['roughness'].outputs['Color'], 
+                                                bsdf_shader_concrete.inputs['Roughness'])
+        
+        # Add Material Output node
+        material_output_concrete = materials['concrete'].node_tree.nodes.new(type='ShaderNodeOutputMaterial')
 
-    # Adjust textures of the materials
-    materials['metal'].use_nodes = True
-    nodes_metal = materials['metal'].node_tree.nodes
+        # Link BSDF output to Surface input
+        materials['concrete'].node_tree.links.new(bsdf_shader_concrete.outputs['BSDF'], material_output_concrete.inputs['Surface'])
+        
+        # Metal ---------------------------------------------------------------------------------------
 
-    # Clear existing nodes
-    for node in nodes_metal:
-        nodes_metal.remove(node)
+        # Adjust textures of the materials
+        materials['metal'].use_nodes = True
+        nodes_metal = materials['metal'].node_tree.nodes
 
-    # Add Principled BSDF shader
-    bsdf_shader_metal = nodes_metal.new(type='ShaderNodeBsdfPrincipled')
+        # Clear existing nodes
+        for node in nodes_metal:
+            nodes_metal.remove(node)
 
-    # Add Image Texture nodes
-    texture_nodes_metal = {k: nodes_metal.new(type='ShaderNodeTexImage') for k in ['color', 'metalness', 'roughness']}
+        # Add Principled BSDF shader
+        bsdf_shader_metal = nodes_metal.new(type='ShaderNodeBsdfPrincipled')
 
-    # Set the image path
-    texture_path_metal = os.path.join(texture_path, 'MetalGalvanizedSteelWorn')
-    texture_nodes_metal['color'].image = bpy.data.images.load(os.path.join(texture_path_metal,
-                                                                           'MetalGalvanizedSteelWorn001_COL_2K_METALNESS.jpg'))
-    texture_nodes_metal['metalness'].image = bpy.data.images.load(os.path.join(texture_path_metal,
-                                                                               'MetalGalvanizedSteelWorn001_METALNESS_2K_METALNESS.jpg'))
-    texture_nodes_metal['roughness'].image = bpy.data.images.load(os.path.join(texture_path_metal,
-                                                                               'MetalGalvanizedSteelWorn001_ROUGHNESS_2K_METALNESS.jpg'))
+        # Add Image Texture nodes
+        texture_nodes_metal = {k: nodes_metal.new(type='ShaderNodeTexImage') for k in ['color', 'metalness', 'roughness']}
 
-    # Link nodes: texture color to Principled BSDF base color
-    materials['metal'].node_tree.links.new(texture_nodes_metal['color'].outputs['Color'],
-                                              bsdf_shader_metal.inputs['Base Color'])
-    materials['metal'].node_tree.links.new(texture_nodes_metal['metalness'].outputs['Color'],
-                                              bsdf_shader_metal.inputs['Metallic'])
-    materials['metal'].node_tree.links.new(texture_nodes_metal['roughness'].outputs['Color'], 
-                                              bsdf_shader_metal.inputs['Roughness'])
-    
-    # Add Material Output node
-    material_output_metal = materials['metal'].node_tree.nodes.new(type='ShaderNodeOutputMaterial')
+        # Set the image path
+        texture_path_metal = os.path.join(texture_path, 'MetalGalvanizedSteelWorn')
+        texture_nodes_metal['color'].image = bpy.data.images.load(os.path.join(texture_path_metal,
+                                                                            'MetalGalvanizedSteelWorn001_COL_2K_METALNESS.jpg'))
+        texture_nodes_metal['metalness'].image = bpy.data.images.load(os.path.join(texture_path_metal,
+                                                                                'MetalGalvanizedSteelWorn001_METALNESS_2K_METALNESS.jpg'))
+        texture_nodes_metal['roughness'].image = bpy.data.images.load(os.path.join(texture_path_metal,
+                                                                                'MetalGalvanizedSteelWorn001_ROUGHNESS_2K_METALNESS.jpg'))
 
-    # Link BSDF output to Surface input
-    materials['metal'].node_tree.links.new(bsdf_shader_metal.outputs['BSDF'], material_output_metal.inputs['Surface'])
+        # Link nodes: texture color to Principled BSDF base color
+        materials['metal'].node_tree.links.new(texture_nodes_metal['color'].outputs['Color'],
+                                                bsdf_shader_metal.inputs['Base Color'])
+        materials['metal'].node_tree.links.new(texture_nodes_metal['metalness'].outputs['Color'],
+                                                bsdf_shader_metal.inputs['Metallic'])
+        materials['metal'].node_tree.links.new(texture_nodes_metal['roughness'].outputs['Color'], 
+                                                bsdf_shader_metal.inputs['Roughness'])
+        
+        # Add Material Output node
+        material_output_metal = materials['metal'].node_tree.nodes.new(type='ShaderNodeOutputMaterial')
+
+        # Link BSDF output to Surface input
+        materials['metal'].node_tree.links.new(bsdf_shader_metal.outputs['BSDF'], material_output_metal.inputs['Surface'])
 
     return materials
 
