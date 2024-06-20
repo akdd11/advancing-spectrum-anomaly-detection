@@ -117,11 +117,11 @@ def create_sionna_sample(config, scene, scene_nr, tx_pos=None, num_rays=int(1e6)
              tx_pos = [np.random.uniform(0, scene_size[0]),
                        np.random.uniform(0, scene_size[1]),
                        config['tx_height']]
-             if enclosed_in_obstacle(tx_pos,scene_nr,round_int=False):
+             if enclosed_in_obstacle(tx_pos, scene_nr):
                  continue
              else:
                  break
-    elif enclosed_in_obstacle(tx_pos,scene_nr,round_int=False):
+    elif enclosed_in_obstacle(tx_pos, scene_nr):
         raise ValueError('Given transmitter position is enclosed within an obstacle.')
             
     tx = srt.Transmitter(name=f'tx', position=tx_pos)
@@ -145,17 +145,14 @@ def create_sionna_sample(config, scene, scene_nr, tx_pos=None, num_rays=int(1e6)
     return plm
 
 
-def enclosed_in_obstacle(tx_pos, scene_nr, round_int=False):
-    """Checks if the transmitter is enclosed within any obstacle(s).
+def enclosed_in_obstacle(tx_pos, scene_nr):
+    """Checks if a point (e.g., a transmitter) is enclosed within any obstacle.
 
     tx_pos : list (int)
-        list containing x,y and z co-ordinates of the transmitter.
+        List containing x, y and z coordinates of the transmitter.
     scene_nr : int
-        index of the current scene.
+        Index of the current scene.
     """
-
-    if round_int:
-        tx_pos[:-1] = np.round(tx_pos[:-1])
 
     # Only read the scene description if it has not been read before
     if not hasattr(enclosed_in_obstacle, '_obstacles'):
@@ -182,7 +179,7 @@ def enclosed_in_obstacle(tx_pos, scene_nr, round_int=False):
     return False
 
 
-def get_obstacle_mask(scene_nr, scene_size):
+def get_obstacle_mask(scene_nr, scene_size, height):
     """
     Returns a boolean mask of the scene where obstacles are True
     and free space is False.
@@ -193,6 +190,8 @@ def get_obstacle_mask(scene_nr, scene_size):
         Index of the current scene.
     scene_size : tuple
         Size of the scene in meters.
+    height : float
+        Height to check for obstacles.
 
     Output
     ------
@@ -204,7 +203,7 @@ def get_obstacle_mask(scene_nr, scene_size):
 
     for i in range(scene_size[0]):
         for j in range(scene_size[1]):
-            if enclosed_in_obstacle([i, j, 0], scene_nr):
+            if enclosed_in_obstacle([i, j, height], scene_nr):
                 mask[i, j] = True
 
     return mask

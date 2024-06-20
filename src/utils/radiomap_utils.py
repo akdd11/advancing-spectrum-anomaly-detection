@@ -88,6 +88,7 @@ class RadioMap:
         self.jammers = []
         self.radio_map = np.zeros(np.array(shape).astype(int))       # in dBm
         self.resolution = resolution
+        self.plot_offset = resolution/2
 
         self.noise_floor = noise_floor
 
@@ -184,19 +185,19 @@ class RadioMap:
 
             for transmitter in self.transmitters:
                 if rm_type == 'orig':
-                    plt.plot(transmitter.tx_pos[0],
-                             transmitter.tx_pos[1],
+                    plt.plot(transmitter.tx_pos[0]+self.plot_offset,
+                             transmitter.tx_pos[1]+self.plot_offset,
                              'v', color=COLOR_TX_ORIG, markersize=10)
                 elif rm_type == 'dt':
                     print(f'Tx pos in dt map: {transmitter.tx_pos}')
-                    plt.plot(transmitter.tx_pos[0],
-                             transmitter.tx_pos[1],
+                    plt.plot(transmitter.tx_pos[0]+self.plot_offset,
+                             transmitter.tx_pos[1]+self.plot_offset,
                              'v', markerfacecolor=COLOR_TX_DT_FACE,
                              markeredgecolor=COLOR_TX_DT_EDGE, markersize=10)
             for jammer in self.jammers:
                 print(f'Jammer pos in orig map: {jammer.tx_pos}')
-                plt.plot(jammer.tx_pos[0],
-                         jammer.tx_pos[1],
+                plt.plot(jammer.tx_pos[0]+self.plot_offset,
+                         jammer.tx_pos[1]+self.plot_offset,
                          'X', markerfacecolor=COLOR_JAMMER_FACE,
                          markeredgecolor=COLOR_JAMMER_EDGE, markersize=10)
 
