@@ -1,15 +1,13 @@
-method: sionna  # fspl or sionna
-
 f_c: 3.7e9      # carrier frequency in Hz
 
 nr_samples: 5000  # number of samples generated
 
-dataset_nr: 0
+dataset_nr: 2
 
 sionna:
   scene_nr: 0
   tx_height: 1.5          # transmitter height in meters
-  rx_height: 1.5          # receiver height in meters
+  rx_height: 5          # receiver height in meters - for the paper 1.5 m and 5 m are used
   cell_size: 1            # cell size in meters
   cm_max_depth: 5         # maximum number of reflections
   diffraction: True       # diffraction enabled
