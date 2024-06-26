@@ -13,7 +13,6 @@ import seaborn as sns
 import shutil
 import sionna.rt as srt
 import sys
-import warnings
 import time
 from tqdm import tqdm
 
@@ -110,8 +109,8 @@ if not cfg.use_original_pl_maps:
 
 # Find error between digital twin (without jammer) and the radio map measured (eventually containing jammer)
 
-plot_dt_map = True
-plot_difference = True
+plot_dt_map = False
+plot_difference = False
 
 jammed_diffs = {'mean': [], 'median': []}
 not_jammed_diffs = {'mean': [], 'median': []}
@@ -122,22 +121,18 @@ meas_x, meas_y = radiomap_utils.generate_measurement_points(measurement_method,
 
 obstacle_mask = get_obstacle_mask(scene_nr, scene.size.numpy().astype(int), config['rx_height']) 
 
-if measurement_method == 'custom1' and np.any(np.array(meas_x) < 0):
-    warnings.warn('Measurement points aligned to new scene center.')
-    meas_x = np.array(meas_x) + scene.size.numpy()[0]/2
-    meas_x = meas_x.astype(int)
-    meas_y = np.array(meas_y) + scene.size.numpy()[1]/2
-    meas_y = meas_y.astype(int)
 
 # Prepare ML dataset and train model
-elif cfg.dt_generation == 'ml':
+if cfg.dt_generation == 'ml':
     print(f"Generating dataset for ML : Scene{scene_nr}")
     samples_nr = int(len(radiomaps))
-    df = generate_df(meas_x, meas_y, scene_nr, cfg.ml_pl_dataset_nr, measurement_method, len(radiomaps))
+    df = generate_df(meas_x, meas_y, scene_nr, cfg.ml_pl_dataset_nr, measurement_method,
+                     len(radiomaps), use_dist=cfg.ml_use_distances)
     
     print(f"\nModel Training... (Started at: {time.ctime(time.time())})\n")
     start = time.time()
-    model, scaler_x, scaler_y = train_model(df, validate=True)
+    model, scaler_x, scaler_y = train_model(df, validate=True, use_dist=cfg.ml_use_distances,
+                                            num_sus=len(meas_x))
     end = time.time()
 
     print(f'Time elapsed in model training: {round((end-start)/60,5)} minutes')
@@ -173,13 +168,13 @@ def add_localization_error():
     return tx_pos_est
 
 start = time.time()
-cnt = 0
+# cnt = 0
 
 for rm_orig in tqdm(radiomaps):
 
-    cnt += 1
-    if cnt < 0:
-        continue
+    # cnt += 1
+    # if cnt < 0:
+    #     continue
 
     # Create digital twin of the radio environment
     if cfg.use_original_pl_maps:
@@ -233,7 +228,9 @@ for rm_orig in tqdm(radiomaps):
             for tx in rm_orig.transmitters:
                 tx_pos_est = add_localization_error()
                 
-                tx_input = prepare_input(tx_pos_est, meas_x, meas_y, scaler_x, measurement_method=measurement_method)
+                tx_input = prepare_input(tx_pos_est, meas_x, meas_y, scaler_x,
+                                         measurement_method=measurement_method,
+                                         use_dist=cfg.ml_use_distances)
                 pred_loss = model.predict(tx_input)
                 pred_loss = scaler_y.inverse_transform(pred_loss)
                 pred_loss =  np.power(10, (tx.tx_power - pred_loss)/10)
@@ -250,7 +247,6 @@ for rm_orig in tqdm(radiomaps):
 
     if len(rm_orig.jammers) == 1:
         jammed_diffs['mean'].append(np.mean(measurements_orig - measurements_dt))
-        
     else:
         not_jammed_diffs['mean'].append(np.mean(measurements_orig - measurements_dt))
         
@@ -273,6 +269,7 @@ with open(os.path.join(dataset_dir, measurements_filename[:-4]+'.txt'), 'a') as 
     print(f'tx_pos_inaccuracy_std: {pos_std}', file=f_out)
     print(f'dt_generation: {cfg.dt_generation}', file=f_out)
 
+# Create a density plot of the difference between the original and the digital twin measurements
 sns.kdeplot(jammed_diffs['mean'], label='Jammed')
 sns.kdeplot(not_jammed_diffs['mean'], label='Not jammed')
 if latex_installed:

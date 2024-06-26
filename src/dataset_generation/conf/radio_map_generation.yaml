@@ -1,6 +1,6 @@
-dataset_nr: 0
+dataset_nr: 2
 
-num_radiomaps: 50       # number of radiomaps to generate
+num_radiomaps: 5000       # number of radiomaps to generate
 
 tx_power: 20    # transmitter power in dBm
 min_num_tx: 3   # minimum number of regular transmitters
