@@ -75,3 +75,5 @@ Currently, the following number is used to identify the different scenarios:
   * 1: Sensing unit height: 1.5m, Transmitter height: 1.5m, using ML to create the DT
   * 2: Sensing unit height: 5.0m, Transmitter height: 1.5m, using ray tracing to create the DT
   * 3: Sensing unit height: 5.0m, Transmitter height: 1.5m, using ML to create the DT
+
+The file number needs to be adjusted in the file `src\dataset_generation\conf\measurement_generation.yaml`.

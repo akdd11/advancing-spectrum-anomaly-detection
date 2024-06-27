@@ -15,6 +15,7 @@ import sionna.rt as srt
 import sys
 import time
 from tqdm import tqdm
+import warnings
 
 
 # find the location of the repository and add it to the path to import the modules
@@ -25,7 +26,7 @@ sys.path.append(os.path.abspath(module_path))
 from src.utils.pl_utils import PathLossMap, PathLossMapCollection  # required to load pathloss map results from pickle file
 from src.utils.pl_utils import enclosed_in_obstacle, create_sionna_sample, get_obstacle_mask
 from src.utils.ml_utils import generate_df, train_model, prepare_input
-from src.utils import description_file_utils, radiomap_utils
+from src.utils import radiomap_utils
 
 # Load config file which contains the parameterss into cfg object
 hydra.initialize(version_base=None, config_path='conf')
@@ -62,12 +63,18 @@ if not cfg.use_original_pl_maps:
 
     scene = srt.load_scene(scene_path)
 
-    # access the pathloss_map_generation to get the sionna config
-    cfg_pl = hydra.compose(config_name='pathloss_map_generation')
-
 pl_filename = f'scene{scene_nr}_PLdataset{rm_dataset_nr}.pkl'  # pathloss dataset (load)
 rm_filename = f'scene{scene_nr}_RMdataset{rm_dataset_nr}.pkl'  # radiomap dataset (load)
 measurements_filename = f'scene{scene_nr}_measurements{meas_dataset_nr}.pkl'  # measurements dataset (save)
+
+if cfg.save_radio_maps:
+    # filename where the plots are saved
+    figure_path = os.path.join(module_path, 'figures', 'radiomaps')
+    if not os.path.exists(figure_path):
+        os.makedirs(figure_path)
+
+    if cfg.dt_generation == 'ml':
+        warnings.warn('No radiomaps created for dt_generation=ml. No plots will be saved.', UserWarning)
 
 
 # Check if the file already exists
@@ -107,10 +114,7 @@ if not cfg.use_original_pl_maps:
                                      pattern='iso',
                                      polarization='VH')
 
-# Find error between digital twin (without jammer) and the radio map measured (eventually containing jammer)
-
-plot_dt_map = False
-plot_difference = False
+# Collect errors between digital twin (without jammer) and the radio map measured (eventually containing jammer)
 
 jammed_diffs = {'mean': [], 'median': []}
 not_jammed_diffs = {'mean': [], 'median': []}
@@ -125,7 +129,6 @@ obstacle_mask = get_obstacle_mask(scene_nr, scene.size.numpy().astype(int), conf
 # Prepare ML dataset and train model
 if cfg.dt_generation == 'ml':
     print(f"Generating dataset for ML : Scene{scene_nr}")
-    samples_nr = int(len(radiomaps))
     df = generate_df(meas_x, meas_y, scene_nr, cfg.ml_pl_dataset_nr, measurement_method,
                      len(radiomaps), use_dist=cfg.ml_use_distances)
     
@@ -168,13 +171,8 @@ def add_localization_error():
     return tx_pos_est
 
 start = time.time()
-# cnt = 0
 
-for rm_orig in tqdm(radiomaps):
-
-    # cnt += 1
-    # if cnt < 0:
-    #     continue
+for rm_idx, rm_orig in enumerate(tqdm(radiomaps)):
 
     # Create digital twin of the radio environment
     if cfg.use_original_pl_maps:
@@ -199,7 +197,7 @@ for rm_orig in tqdm(radiomaps):
             # Apply the noise floor for very small values (noise floor value already set at initialization of radio map)
             rm_dt.apply_noise_floor()
 
-            if plot_dt_map:
+            if cfg.plot_radio_maps or cfg.save_radio_maps:
                 # mask the pixels that are inside obstacles
                 rm_orig_obstacles = np.copy(rm_orig.radio_map)
                 rm_orig_obstacles[obstacle_mask] = np.nan
@@ -208,15 +206,33 @@ for rm_orig in tqdm(radiomaps):
                 # find minimum and maximum value for both radio maps
                 v_min = np.nanmin([np.nanmin(rm_orig_obstacles), np.nanmin(rm_dt_obstacles)])
                 v_max = np.nanmax([np.nanmax(rm_orig_obstacles), np.nanmax(rm_dt_obstacles)])
-                rm_orig.show_radio_map(rm_type='orig', vmin=v_min, vmax=v_max, obstacle_mask=obstacle_mask)
-                rm_dt.show_radio_map(rm_type='dt', vmin=v_min, vmax=v_max, obstacle_mask=obstacle_mask)
+                if cfg.save_radio_maps:
+                    filename_orig = os.path.join(figure_path, f'radiomap_orig_{rm_idx}.png')
+                    filename_dt = os.path.join(figure_path, f'radiomap_dt_{rm_idx}.png')
+                    filename_diff = os.path.join(figure_path, f'radiomap_diff_{rm_idx}.png')
+                else:
+                    filename_orig = None
+                    filename_dt = None
+                    filename_diff = None
 
-            if plot_difference:
+                # plot the radio maps (original and DT)
+                rm_orig.show_radio_map(rm_type='orig', vmin=v_min, vmax=v_max,
+                                        obstacle_mask=obstacle_mask,
+                                        show_plot=cfg.plot_radio_maps,
+                                        filename=filename_orig)
+                rm_dt.show_radio_map(rm_type='dt', vmin=v_min, vmax=v_max,
+                                        obstacle_mask=obstacle_mask,
+                                        show_plot=cfg.plot_radio_maps,
+                                        filename=filename_dt)
+
+                # plot the difference
                 radiomap_utils.plot_radio_map_difference(rm_orig, rm_dt, plot_orig_tx=False,
                                                          plot_dt_tx=False,
                                                          meas_x=meas_x, meas_y=meas_y,
                                                          res_offset=rm_orig.plot_offset,
-                                                         obstacle_mask=obstacle_mask)
+                                                         obstacle_mask=obstacle_mask,
+                                                         show_plot=cfg.plot_radio_maps,
+                                                         filename=filename_diff)
             
         elif cfg.dt_generation == 'ml':
 
@@ -233,14 +249,14 @@ for rm_orig in tqdm(radiomaps):
                                          use_dist=cfg.ml_use_distances)
                 pred_loss = model.predict(tx_input)
                 pred_loss = scaler_y.inverse_transform(pred_loss)
-                pred_loss =  np.power(10, (tx.tx_power - pred_loss)/10)
+                rx_power_lin =  np.power(10, (tx.tx_power - pred_loss)/10)
                 
-                measurements_dt += pred_loss 
+                measurements_dt += rx_power_lin 
                     
             measurements_dt = 10 * np.log10(measurements_dt)     # convert to dBm
     
     measurements_orig = radiomap_utils.do_measurements(rm_orig, meas_x, meas_y)
-    if cfg.dt_generation not in ['fast' , 'ml']:
+    if cfg.dt_generation == 'accurate':
         measurements_dt = radiomap_utils.do_measurements(rm_dt, meas_x, meas_y)
 
     measurement_collection.add_measurement(rm_orig.transmitters, rm_orig.jammers, measurements_orig, measurements_dt)
@@ -280,6 +296,7 @@ plt.grid()
 plt.legend()
 plt.tight_layout()
 if cfg.save_density_plot:
-    config = description_file_utils.get_config_from_file(os.path.join(dataset_dir, measurements_filename[:-4]+'.txt'))
-    plt.savefig(os.path.join(module_path, 'figures', 'fspl_anomaly_detection', f'difference_distr-noise_{config["noise_std"]}-grid_size{config["grid_size"]}.pdf'))
+    filename = os.path.join(module_path, 'figures',
+                            f'error_density_{cfg.dt_generation}_su{config["rx_height"]}m.png')
+    plt.savefig(filename, dpi=300)
 plt.show()

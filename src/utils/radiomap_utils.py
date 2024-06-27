@@ -1,5 +1,4 @@
 from distutils.spawn import find_executable
-import math
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
@@ -140,7 +139,7 @@ class RadioMap:
             self.radio_map = 10*np.log10(10**(self.radio_map/10) + 10**(single_radio_map/10))
 
 
-    def show_radio_map(self, plot_transmitters=True, rm_type='orig', **kwargs):
+    def show_radio_map(self, plot_transmitters=True, rm_type='orig', show_plot=True, **kwargs):
         """Plot the radio map as a heatmap.
         
         plot_transmitters : bool
@@ -148,6 +147,9 @@ class RadioMap:
         rm_type : str
             Type of the radio map. Can be 'orig' or 'dt'. Default is 'orig'.
             This only influences the labeling and the color of the transmitters.
+        show_plot : bool
+            If True, the plot is shown.
+            Can be set to False, if the plot shall be only saved to a file.
         (optional) meas_x : list
             List of x coordinates of the measurement points.
         (optional) meas_y : list
@@ -159,6 +161,8 @@ class RadioMap:
         (optional) obstacle_mask : numpy.ndarray
             Mask for obstacles in the radio map. If provided, obstacle values are
             set to NaN.
+        (optional) filename : str
+            Filename (incl. path) to save the plot.
         """
 
         if rm_type not in ['orig', 'dt']:
@@ -232,8 +236,12 @@ class RadioMap:
                    np.arange(0, radio_map.shape[1]+1, 5))
         plt.legend(loc='lower left')
         plt.tight_layout()
-        plt.savefig('rm.png', dpi=400)
-        plt.show()
+
+        if 'filename' in kwargs and kwargs['filename'] is not None:
+            plt.savefig(kwargs['filename'], dpi=400)
+
+        if show_plot:
+            plt.show()
 
 
 class Transmitter:
@@ -319,7 +327,8 @@ def generate_measurement_points(method, shape, **kwargs):
 
     elif method == 'custom1':
         
-        SU_coords1 = [[6,29], [12,29], [17,29], [23,29], [28,29], [34,29], [6,11], [12,11], [17,11], [23,11], [28,11], [34,11]] 
+        SU_coords1 = [[6,29], [12,29], [17,29], [23,29], [28,29], [34,29],
+                      [6,11], [12,11], [17,11], [23,11], [28,11], [34,11]] 
         meas_x = []
         meas_y = []
         
@@ -378,7 +387,8 @@ def reshape_measurements_to_2D(meas_x, meas_y, shape, grid_size, measurements):
 
 def plot_radio_map_difference(rm_orig, rm_dt, plot_orig_tx=False, plot_dt_tx=False,
                               meas_x=[], meas_y=[], res_offset=0.5,
-                              obstacle_mask=None):
+                              obstacle_mask=None, show_plot=True,
+                              filename=None):
     """Plots the difference between the original and the DT radio map.
     
     rm_orig : RadioMap
@@ -398,6 +408,10 @@ def plot_radio_map_difference(rm_orig, rm_dt, plot_orig_tx=False, plot_dt_tx=Fal
     obstacle_mask : numpy.ndarray
         Mask for obstacles in the radio map. If provided, obstacle values are
         set to NaN.
+    show_plot : bool
+        If True, the plot is shown.
+    filename : str
+        Filename (incl. path) to save the plot.
     """
 
     plt.rcParams['text.usetex'] = latex_installed
@@ -457,8 +471,10 @@ def plot_radio_map_difference(rm_orig, rm_dt, plot_orig_tx=False, plot_dt_tx=Fal
     plt.yticks(np.arange(0, rm_orig.radio_map.shape[1]+1, 5),
                np.arange(0, rm_orig.radio_map.shape[1]+1, 5))
     plt.tight_layout()
-    plt.savefig('rm_diff.png', dpi=400)
-    plt.show()
+    if filename is not None:
+        plt.savefig(filename, dpi=400)
+    if show_plot:
+        plt.show()
 
 
 def reshape_measurement_collection_to_2D(meas_x, meas_y, measurements1D):

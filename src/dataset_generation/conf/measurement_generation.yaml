@@ -2,7 +2,7 @@ dt_generation: 'ml'       # 'accurate' or 'ml'
 
 measurement_method: custom1    # 'custom1'
 scene_nr: 0                   # scene number to use for the measurements
-use_original_pl_maps: False   # use the original pathloss maps, no new raytracing is performed
+use_original_pl_maps: False   # use the original pathloss maps, no new raytracing is performed (for debugging only)
 
 rm_dataset_nr: 0          # number of the path loss and radio map dataset to load
 meas_dataset_nr: 1        # number of the measurements dataset to save
@@ -21,4 +21,6 @@ noise_floor: -100
 # Standard deviation of the regular transmitter localization error (see paper for further information)
 tx_pos_inaccuracy_std: 0.37
 
-save_density_plot: False
+plot_radio_maps: False      # if True, the original and the DT radio map as well as the difference between them is shown
+save_radio_maps: False      # if True, the original and the DT radio map as well as the difference between them is saved
+save_density_plot: False    # in the end, a density of the measurements mean per sample is shown, which can be saved
