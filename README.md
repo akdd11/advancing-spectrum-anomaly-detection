@@ -77,3 +77,8 @@ Currently, the following number is used to identify the different scenarios:
   * 3: Sensing unit height: 5.0m, Transmitter height: 1.5m, using ML to create the DT
 
 The file number needs to be adjusted in the file `src\dataset_generation\conf\measurement_generation.yaml`.
+
+
+# Anomaly Detection
+
+Evaluating different anomaly detection algorithms on the generated datasets can be done with the script `src\anomaly_detection\sionna_anomaly_detection.py`. The configuration can be done with the configuration file  `src\anomaly_detection\conf\sionna_anomaly_detection.yaml`. Particularly, the dataset and the employed algorithm can be specified there. The results are saved in the folder `datasets\results`. To draw the ROC curves, the output of the anomaly detection must be a soft output, therefore `probability` must be set to `True` in the configuration file.

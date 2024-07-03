@@ -1,0 +1,22 @@
+# 0 : Accurate (Sionna), with tx inccuracy, rx height 1.5m
+# 1 : ML, with tx inccuracy, rx height 1.5m
+# 2 : Accurate (Sionna), with tx inccuracy, rx height 5m
+# 3 : ML, with tx inccuracy, rx height 5m
+scene_nr: 0
+dataset_nr: 3
+
+method: 'energy_detector'         # 'lof', 'energy_detector'
+probability: True                 # wether to output a probability or a binary classification
+outlier_probability: 0.5          # Probability of anomalies in the test set
+num_test_samples: null            # Number of samples to be used in the test set, null = None means all samples
+verbosity: 0                      # 0: no output, 1: some intermediate prints
+
+sort_values: True                # Sort the values input in ascending order
+
+lof:
+  n_neighbors: 100                # Number of neighbors to be used in the algorithm
+
+meas_noise_std:            # Iterate over those levels of noise (std in dB), which is added to the measurements
+  - 0
+  - 3
+  - 6
