@@ -1,9 +1,8 @@
 # advancing-spectrum-anomaly-detection
-Code for the paper "Advancing Spectrum Anomaly Detection through Digital Twins"
 
 ## Introduction
 
-...
+The repository contains the code to run the simulations used for the paper "Advancing Spectrum Anomaly Detection through Digital Twins" which can be found [here](https://www.techrxiv.org/users/775914/articles/883996-advancing-spectrum-anomaly-detection-through-digital-twins). In the paper, a novel approach for identifying spectrum anomalies is proposed, which employs a digital twin of the radio environment. The simulations are based on ray tracing using [Sionna](https://nvlabs.github.io/sionna/). [Blender](https://www.blender.org/) is used to create the model of the scenario.
 
 ### Module Versions
 
