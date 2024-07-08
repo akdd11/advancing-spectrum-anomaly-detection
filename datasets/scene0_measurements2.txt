@@ -1,0 +1,15 @@
+scene_nr: 0
+f_c: 3700000000.0
+tx_height: 1.5
+rx_height: 5
+cell_size: 1
+cm_max_depth: 5
+diffraction: True
+edge_diffraction: True
+num_samples: 1000000.0
+resolution: 1
+scene_size: [40. 40.  5.]
+
+measurement_method: custom1
+tx_pos_inaccuracy_std: 0.37
+dt_generation: accurate

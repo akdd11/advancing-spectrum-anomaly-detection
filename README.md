@@ -82,3 +82,5 @@ The file number needs to be adjusted in the file `src\dataset_generation\conf\me
 # Anomaly Detection
 
 Evaluating different anomaly detection algorithms on the generated datasets can be done with the script `src\anomaly_detection\sionna_anomaly_detection.py`. The configuration can be done with the configuration file  `src\anomaly_detection\conf\sionna_anomaly_detection.yaml`. Particularly, the dataset and the employed algorithm can be specified there. The results are saved in the folder `datasets\results`. To draw the ROC curves, the output of the anomaly detection must be a soft output, therefore `probability` must be set to `True` in the configuration file.
+
+The ROC curves can be drawn then in the notebook `notebooks\roc_curves_sionna.ipynb`.
