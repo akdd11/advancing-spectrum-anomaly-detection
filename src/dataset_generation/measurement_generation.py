@@ -130,7 +130,7 @@ obstacle_mask = get_obstacle_mask(scene_nr, scene.size.numpy().astype(int), conf
 if cfg.dt_generation == 'ml':
     print(f"Generating dataset for ML : Scene{scene_nr}")
     df = generate_df(meas_x, meas_y, scene_nr, cfg.ml_pl_dataset_nr, measurement_method,
-                     len(radiomaps), use_dist=cfg.ml_use_distances)
+                     use_dist=cfg.ml_use_distances)
     
     print(f"\nModel Training... (Started at: {time.ctime(time.time())})\n")
     start = time.time()

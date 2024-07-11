@@ -22,7 +22,7 @@ sys.path.append(os.path.abspath(module_path))
 
 
 def generate_df(meas_x, meas_y, scene_nr, dataset_nr, measurement_method,
-                 samples_nr, use_dist=True, save_dataset=False):
+                use_dist=True, save_dataset=False):
     '''Generates dataset suitable for supervised ML model training.
     meas_x: list
         list of x-coordinates of SUs.
@@ -34,8 +34,6 @@ def generate_df(meas_x, meas_y, scene_nr, dataset_nr, measurement_method,
         dataset number of the path loss dataset for learning the ML model.
     measurement_method: String
         Type of SU placement in the scene.
-    samples_nr: int
-        no of samples.
     use_dist: Bool
         If True, dataset will have distances between SUs and transmitter as a feature.
     save_dataset: Bool
@@ -69,7 +67,7 @@ def generate_df(meas_x, meas_y, scene_nr, dataset_nr, measurement_method,
 
     df_list = []
     
-    for sample_id in tqdm(range(samples_nr)):
+    for sample_id in tqdm(range(len(plmc.pathlossmaps))):
         plm_df = np.array(plmc.pathlossmaps[sample_id].tx_pos[:2])
         pathloss_values = [plmc.pathlossmaps[sample_id].pathloss[int(meas_x[i]), int(meas_y[i])] for i in range(len(meas_x))]
         if use_dist:
