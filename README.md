@@ -17,7 +17,7 @@ The code was developoed Python modules 3.10.10 and the following module versions
 
 ## Scenario Creation
 
-The scenario for ray tracing is created using Blender and a Python script. The script `create_scenario_with_obstacles.py`is provided in the folder `blender-python`.  To execute the script, open Blender and got to the `Scripting` tab. Then, open the script and run it. The script will create a scenario with obstacles and save it in the folder `scenes`. The scene is exported in the `mitsuba` format which can be processed by `sionna`.
+For successful export of the scene, the [Mitsuba Add-on for Blender](https://github.com/mitsuba-renderer/mitsuba-blender) needs to be installed first. The scenario for ray tracing is created using Blender and a Python script. The script `create_scenario_with_obstacles.py`is provided in the folder `blender-python`.  To execute the script, open Blender and got to the `Scripting` tab. Then, open the script and run it. The script will create a scenario with obstacles and save it in the folder `scenes`. The scene is exported in the `mitsuba` format which can be processed by `sionna`.
 
 Adjustments to the scenario can be specified in the file `blender-python\conf\scene_attributes.yaml`. Please note, that the properties `transmitters`, `jammers` and `base_stations` are only used for visualization purposes.
 
