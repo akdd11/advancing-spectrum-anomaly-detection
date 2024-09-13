@@ -1,4 +1,4 @@
-# advancing-spectrum-anomaly-detection
+# Advancing Spectrum Anomaly Detection through Digital Twins
 
 ## Introduction
 
