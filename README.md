@@ -4,6 +4,18 @@
 
 The repository contains the code to run the simulations used for the paper "Advancing Spectrum Anomaly Detection through Digital Twins" which can be found [here](https://www.techrxiv.org/users/775914/articles/883996-advancing-spectrum-anomaly-detection-through-digital-twins). In the paper, a novel approach for identifying spectrum anomalies is proposed, which employs a digital twin of the radio environment. The simulations are based on ray tracing using [Sionna](https://nvlabs.github.io/sionna/). [Blender](https://www.blender.org/) is used to create the model of the scenario.
 
+If you use the code or parts of it, please cite
+```bibtex
+@article{schoesser24,
+title={Advancing Spectrum Anomaly Detection through Digital Twins},
+DOI={10.36227/techrxiv.171470424.41432460/v2},
+publisher={TechRxiv},
+author={Schösser, Anton and Burmeister, Friedrich and Schulz, Philipp and Khursheed, Mohd Danish and Ma, Sinuo and Fettweis, Gerhard},
+year={2024},
+month=sep
+}
+```
+
 ### Module Versions
 
 The code was developoed Python modules 3.10.10 and the following module versions have been used:
