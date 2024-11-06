@@ -7,12 +7,13 @@ The repository contains the code to run the simulations used for the paper "Adva
 If you use the code or parts of it, please cite
 ```bibtex
 @article{schoesser24,
-title={Advancing Spectrum Anomaly Detection through Digital Twins},
-DOI={10.36227/techrxiv.171470424.41432460/v2},
-publisher={TechRxiv},
-author={Schösser, Anton and Burmeister, Friedrich and Schulz, Philipp and Khursheed, Mohd Danish and Ma, Sinuo and Fettweis, Gerhard},
-year={2024},
-month=sep
+  author={Schösser, Anton and Burmeister, Friedrich and Schulz, Philipp and Khursheed, Mohd Danish and Ma, Sinuo and Fettweis, Gerhard},
+  journal={IEEE Communications Magazine}, 
+  title={Advancing Spectrum Anomaly Detection through Digital Twins}, 
+  year={2024},
+  month={11}
+  pages={1-7},
+  doi={10.1109/MCOM.001.2400221}}
 }
 ```
 
