@@ -11,7 +11,7 @@ If you use the code or parts of it, please cite
   journal={IEEE Communications Magazine}, 
   title={Advancing Spectrum Anomaly Detection through Digital Twins}, 
   year={2024},
-  month={11}
+  month={11},
   pages={1-7},
   doi={10.1109/MCOM.001.2400221}}
 }
