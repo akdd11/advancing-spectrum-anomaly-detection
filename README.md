@@ -13,7 +13,7 @@ If you use the code or parts of it, please cite
   year={2024},
   month={11},
   pages={1-7},
-  doi={10.1109/MCOM.001.2400221}}
+  doi={10.1109/MCOM.001.2400221}
 }
 ```
 
