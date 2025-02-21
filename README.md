@@ -17,6 +17,17 @@ If you use the code or parts of it, please cite
 }
 ```
 
+### Release History
+
+#### 1.0
+
+* Status at the time of final paper submission.
+
+#### Further Changes (not in a release yet)
+
+* So far, there only have been visual changes to plots.
+
+
 ### Module Versions
 
 The code was developoed Python modules 3.10.10 and the following module versions have been used:
